@@ -294,6 +294,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* Header: lighter glass over the film */
 .nav-bar{background-color:color-mix(in srgb,var(--c-bg) 55%,transparent);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
 .nav-bar[data-open=true]{background-color:color-mix(in srgb,var(--c-bg) 90%,transparent)}
+/* film v2: GPU-composited camera layers */
+.fm-cam{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.fm-drift{transform-origin:0 0;will-change:transform}
+.fm-tex{display:block}
+.fm-focus{position:absolute;inset:0;overflow:hidden;
+  -webkit-mask-image:radial-gradient(ellipse 46% 62% at 68% 50%,#000 0,rgba(0,0,0,.85) 45%,transparent 100%);
+          mask-image:radial-gradient(ellipse 46% 62% at 68% 50%,#000 0,rgba(0,0,0,.85) 45%,transparent 100%)}
+.hero-media{overflow:hidden}
 
 /* Hero heading: always exactly two lines */
 .hero-copy{max-width:44rem}
@@ -2776,9 +2784,11 @@ const bootFilm = () => {
   const ctx = cv.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TW = 2400, TH = 1350;
-  const tex = document.createElement('canvas'); tex.width = TW; tex.height = TH; const tx = tex.getContext('2d');
+  const vw0 = cv.parentElement.getBoundingClientRect();
+  const needQ = Math.max(vw0.width / TW, vw0.height / TH) * 1.28 * Math.min(window.devicePixelRatio || 1, 2);
+  const Q = Math.min(vw0.width < 700 ? 1.3 : 1.7, Math.max(0.8, needQ));
+  const tex = document.createElement('canvas'); tex.width = Math.round(TW * Q); tex.height = Math.round(TH * Q); const tx = tex.getContext('2d');
   const soft = document.createElement('canvas'); soft.width = TW / 4; soft.height = TH / 4; const sx = soft.getContext('2d');
-  const work = document.createElement('canvas'); const wx = work.getContext('2d');
   let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const MONO = '"IBM Plex Mono", ui-monospace, monospace', SANS = '"Instrument Sans", system-ui, sans-serif';
 
@@ -2805,6 +2815,7 @@ const bootFilm = () => {
     tx.fillStyle = '#7f93ad'; tx.font = `600 22px ${SANS}`; tx.textBaseline = 'top'; tx.fillText(title, x + 28, y + 24);
   }
   function paint() {
+    tx.setTransform(Q, 0, 0, Q, 0, 0);
     tx.fillStyle = '#0a111b'; tx.fillRect(0, 0, TW, TH);
     // header strip
     tx.fillStyle = '#0c131d'; tx.fillRect(0, 0, TW, 70);
@@ -2852,58 +2863,39 @@ const bootFilm = () => {
     sx.filter = 'blur(3.5px)'; sx.clearRect(0, 0, soft.width, soft.height); sx.drawImage(tex, 0, 0, soft.width, soft.height); sx.filter = 'none';
   }
 
-  let W = 0, H = 0, dpr = 1;
-  function size() {
-    const r = cv.getBoundingClientRect(); dpr = 0.5;   // render below screen resolution: the footage is soft by design, and this keeps it smooth
-    W = r.width; H = r.height; cv.width = work.width = Math.round(W * dpr); cv.height = work.height = Math.round(H * dpr);
-  }
-  const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  // Plays for everyone (gently slower if the viewer prefers reduced motion); starts mid-move so motion is visible at once.
+  /* Compositor-driven camera: the texture is painted once at screen resolution, then moved with
+     GPU transforms (no per-frame drawing), so the motion stays smooth and the focus band stays sharp. */
+  const host = cv.parentElement; cv.style.display = 'none';
+  const mk = (cls, canvas) => { const a = document.createElement('div'); a.className = 'fm-cam ' + cls; const d = document.createElement('div'); d.className = 'fm-drift';
+    canvas.className = 'fm-tex'; canvas.style.width = TW + 'px'; canvas.style.height = TH + 'px'; d.appendChild(canvas); a.appendChild(d); return a; };
+  const softLayer = mk('fm-soft', soft);
+  const sharpWrap = document.createElement('div'); sharpWrap.className = 'fm-focus';
+  const sharpLayer = mk('fm-sharp', tex); sharpWrap.appendChild(sharpLayer);
+  host.insertBefore(softLayer, cv); host.insertBefore(sharpWrap, cv);
   const speed = reduce ? 0.5 : 1;
-  let t0 = performance.now() - 7000 / speed, paused = false, pausedAt = 0, offset = 0;
-  function frame(now) {
-    if (!cv.width || !cv.height) return;
-    const t = ((paused ? pausedAt : now) - t0 - offset) / 1000 * speed;
-    const k = ease((Math.sin(t / 30 * Math.PI * 2 - Math.PI / 2) + 1) / 2);   // 30 s ping-pong
+  let anims = [];
+  function camAt(W, H, k) {
     const scale = Math.max(W / TW, H / TH) * (1.18 + 0.08 * k);
-    const camX = TW * (0.40 + 0.2 * k), camY = TH * (0.5 + 0.05 * Math.sin(t / 17));
-    const setCam = c => { c.setTransform(1, 0, 0, 1, 0, 0); c.translate(cv.width * 0.62, cv.height * 0.5); c.rotate(-0.07); c.transform(1, 0.04, -0.12, 1, 0, 0); c.scale(scale * dpr, scale * dpr); c.translate(-camX, -camY); };
-    // out-of-focus layer
-    setCam(ctx); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(soft, 0, 0, TW, TH);
-    // in-focus band, feathered
-    wx.setTransform(1, 0, 0, 1, 0, 0); wx.clearRect(0, 0, work.width, work.height);
-    setCam(wx); wx.drawImage(tex, 0, 0);
-    wx.setTransform(1, 0, 0, 1, 0, 0); wx.globalCompositeOperation = 'destination-in';
-    const fx = work.width * (0.66 + 0.06 * Math.sin(t / 11)), fy = work.height * 0.5;
-    const g = wx.createRadialGradient(fx, fy, 0, fx, fy, work.width * 0.42);
-    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.45, 'rgba(0,0,0,.85)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    wx.fillStyle = g; wx.fillRect(0, 0, work.width, work.height); wx.globalCompositeOperation = 'source-over';
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(work, 0, 0);
-    // monitor glow / bokeh
-    ctx.globalCompositeOperation = 'screen';
-    for (let i = 0; i < 3; i++) {
-      const bx = cv.width * ((0.2 + i * 0.21 + t * 0.004 * (i % 2 ? 1 : -1)) % 1.1), by = cv.height * (0.15 + ((i * 37) % 70) / 100), br = cv.width * (0.05 + (i % 3) * 0.025);
-      const bg = ctx.createRadialGradient(bx, by, 0, bx, by, br); bg.addColorStop(0, 'rgba(120,160,220,.14)'); bg.addColorStop(1, 'rgba(120,160,220,0)');
-      ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(bx, by, br, 0, 7); ctx.fill();
-    }
-    ctx.globalCompositeOperation = 'source-over';
+    const camX = TW * (0.40 + 0.2 * k), camY = TH * 0.5;
+    return `translate(${W * 0.62}px, ${H * 0.5}px) rotate(-0.07rad) matrix(1, 0.04, -0.12, 1, 0, 0) scale(${scale}) translate(${-camX}px, ${-camY}px)`;
   }
-  let last = 0, visible = true;
-  function loop(now) {
-    if (!visible || document.hidden) { looping = false; return; }
-    if (now - last < 50 || now - lastScroll < 180) { requestAnimationFrame(loop); return; }   // ~24 fps, and hold still while the page is scrolling
-    last = now; frame(now); requestAnimationFrame(loop);
+  function animate() {
+    const r = host.getBoundingClientRect(); const W = r.width, H = r.height; if (!W || !H) return;
+    const prog = anims[0] ? anims[0].currentTime : 7000 / speed;
+    anims.forEach(a => a.cancel()); anims = [];
+    [softLayer, sharpLayer].forEach(l => {
+      anims.push(l.animate([{ transform: camAt(W, H, 0) }, { transform: camAt(W, H, 1) }], { duration: 15000 / speed, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
+      anims.push(l.firstChild.animate([{ transform: `translateY(${TH * 0.05}px)` }, { transform: `translateY(${-TH * 0.05}px)` }], { duration: 17000 * Math.PI / 2 / speed, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
+    });
+    anims.forEach(a => { a.currentTime = prog; });
+    if (!visible) anims.forEach(a => a.pause());
   }
-  let looping = false, lastScroll = 0;
-  addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
-  const kick = () => { if (!looping && visible && !document.hidden) { looping = true; requestAnimationFrame(loop); } };
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; kick(); }).observe(cv);
-  document.addEventListener('visibilitychange', kick);
-  function start() { size(); paint(); frame(performance.now()); kick(); }
-  start();
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; anims.forEach(a => visible ? a.play() : a.pause()); }).observe(host);
+  paint();
+  animate();
   if (document.fonts) document.fonts.ready.then(paint);
-  new ResizeObserver(() => { size(); frame(performance.now()); }).observe(cv);
-  setInterval(() => { if (!paused && visible && !document.hidden) { tick(); paint(); } }, 3000);
+  let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(animate, 150); }).observe(host);
 
 };
 /* Start now, and again whenever the viewer swaps in a new version of the page without a full reload. */
