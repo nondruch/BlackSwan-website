@@ -1,0 +1,99 @@
+/* Hero heading: always exactly two lines */
+.hero-copy{max-width:44rem}
+.hero-h{font-size:min(3.5rem,calc((100vw - 2 * var(--spacing-gutter) - 2.625rem) / 11.6))}
+.hero-h span{display:block;white-space:nowrap}
+.hero-p{max-width:30rem}
+@media (max-width:40rem){.hero-h{font-size:calc((100vw - 2 * var(--spacing-gutter) - 1.5rem) / 11.2)}}
+
+/* ================= WHO WE ARE (Citadel-style introductory text) ================= */
+.intro{--ink:#0d1f38;--eyebrow:#0d1f38;--rule:rgba(5,20,35,.23);--btn:#2f6aa8;--btn-hover:#f8ce56;
+  background:#fff;position:relative}
+.intro-panel{background:#f5f6f8;margin-right:3.5rem;padding-block:6.5rem}
+.intro-row{max-width:96rem;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.1fr);column-gap:1.5rem}
+.intro-eyebrow{font-family:var(--font-sans);font-size:1.125rem;line-height:1.5rem;color:var(--eyebrow);max-width:15.625rem}
+.intro-text{position:relative;padding-left:1.5rem;max-width:56rem}
+.intro-text::before{content:"";position:absolute;left:0;top:.375rem;height:100%;border-left:1px solid var(--rule)}
+.intro-text p{font-family:var(--font-display);font-weight:500;color:var(--ink);font-variant-numeric:lining-nums;font-size:clamp(1.375rem,.9rem + 1.45vw,2.25rem);line-height:1.22;letter-spacing:-.005em}
+.intro-cta{margin-top:2.5rem}
+.block-btn{position:relative;display:inline-block;overflow:hidden;background:var(--btn);padding:13px 24px;
+  transition:background-color .2s ease}
+.block-btn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--btn-hover);opacity:0;
+  transition:width .4s cubic-bezier(.39,.57,.56,1),opacity .3s .1s}
+.block-btn .label{position:relative;z-index:1;font-family:var(--font-sans);font-size:1rem;line-height:1.5rem;color:#fff;transition:color .25s ease}
+@media (hover:hover){
+  .block-btn:hover::before{width:100%;opacity:1;transition:width .4s cubic-bezier(.39,.57,.56,1),opacity .15s}
+  .block-btn:hover .label{color:var(--ink)}
+}
+.block-btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media (max-width:63.99rem){
+  .intro-panel{margin-right:1rem;padding-block:4rem}
+  .intro-row{grid-template-columns:minmax(0,1fr);row-gap:1.25rem}
+  .intro-text p{font-size:clamp(1.25rem,.95rem + 1.6vw,1.75rem)}
+}
+@media (max-width:40rem){.block-btn{padding:9px 16px}}
+
+
+/* v2: the panel rises over the end of the film instead of a hard cut */
+.hero-body{padding-bottom:calc(5rem + var(--overlap))}
+.hero{--overlap:7.5rem}
+.hero-shade{background:
+  linear-gradient(to bottom,rgba(5,8,12,.75) 0%,rgba(5,8,12,0) 22%),
+  linear-gradient(to right,rgba(6,10,16,.9) 0%,rgba(6,10,16,.7) 30%,rgba(6,10,16,.15) 58%,rgba(6,10,16,0) 100%),
+  linear-gradient(to top,rgba(14,24,38,.95) 0%,rgba(14,24,38,.55) 18%,rgba(5,8,12,0) 42%)}
+.intro{background:linear-gradient(180deg,#e8edf3 0%,#f6f7f9 22rem,#fff 100%)}
+.intro-panel{position:relative;z-index:3;margin-top:calc(-1 * var(--hero-overlap,7.5rem));
+  background:linear-gradient(180deg,#eef2f7 0%,#f5f6f8 14rem);
+  box-shadow:0 -24px 60px -20px rgba(4,10,20,.55)}
+.intro-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,rgba(143,163,188,.6),rgba(143,163,188,0) 70%)}
+@media (max-width:63.99rem){.hero{--overlap:4rem}.intro-panel{margin-top:-4rem}}
+/* v3: stop margin collapse; frosted top edge so the film melts into the panel */
+.intro{display:flow-root}
+.intro-panel{background:linear-gradient(180deg,rgba(226,233,242,.10) 0,rgba(232,237,244,.72) 3.5rem,rgba(240,243,247,.97) 6.5rem,#f5f6f8 9rem);
+  -webkit-backdrop-filter:blur(22px) saturate(120%);backdrop-filter:blur(22px) saturate(120%);box-shadow:none}
+.intro-panel::before{display:none}
+/* v4: ramp the frost too, so there is no seam where the panel begins */
+.intro-panel{-webkit-backdrop-filter:none;backdrop-filter:none;
+  background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(232,237,244,.55) 3rem,rgba(240,243,247,.95) 6.5rem,#f5f6f8 9rem)}
+.intro-panel::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:9rem;pointer-events:none;z-index:-1;background:none;
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4.5rem);mask-image:linear-gradient(180deg,transparent 0,#000 4.5rem)}
+.intro-panel{isolation:isolate}
+.intro-panel::before{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4rem,#000 5.5rem,transparent 8rem);mask-image:linear-gradient(180deg,transparent 0,#000 4rem,#000 5.5rem,transparent 8rem)}
+.intro-panel{background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(232,237,244,.55) 2.5rem,rgba(240,243,247,.9) 5rem,#f5f6f8 7.25rem)}
+@media (max-width:63.99rem){.intro-panel{background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(236,240,245,.8) 2rem,#f5f6f8 3.9rem)}.intro-panel::before{height:4rem}}
+
+/* v5: the fade runs edge to edge (no box, no strip on the right) */
+.intro{background:#f5f6f8}
+.intro-panel{margin-right:0}
+@media (max-width:63.99rem){.intro-panel{margin-right:0}}
+/* Header: the same glass everywhere on the page */
+.nav-bar,.nav-bar[data-scrolled=true]{background-color:color-mix(in srgb,var(--c-bg) 55%,transparent);-webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
+/* blend straight into the Divisions band below */
+.intro{background:#f2f3f5}
+.intro-panel{background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(232,237,244,.55) 2.5rem,rgba(238,241,245,.9) 5rem,#f2f3f5 7.25rem)}
+@media (max-width:63.99rem){.intro-panel{background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(236,240,245,.8) 2rem,#f2f3f5 3.9rem)}}
+/* v6: at the very top only the first breath of the fade shows; the rest arrives as you scroll */
+:root{--ov:10rem;--peek:2.25rem}
+@media (max-width:63.99rem){:root{--ov:5.5rem;--peek:1.5rem}}
+.hero{--overlap:var(--ov);min-height:calc(100svh + var(--ov) - var(--peek))}
+.hero-body{padding-bottom:calc(4rem + var(--ov) - var(--peek))}
+.hero-shade{background:
+  linear-gradient(to bottom,rgba(5,8,12,.75) 0%,rgba(5,8,12,0) 22%),
+  linear-gradient(to right,rgba(6,10,16,.9) 0%,rgba(6,10,16,.7) 30%,rgba(6,10,16,.15) 58%,rgba(6,10,16,0) 100%),
+  linear-gradient(to top,rgba(14,24,38,.9) 0%,rgba(14,24,38,.35) 14%,rgba(5,8,12,0) 26%)}
+.intro-panel{margin-top:calc(-1 * var(--ov));padding-top:calc(var(--ov) + 1rem);
+  background:linear-gradient(180deg,rgba(226,233,242,0) 0,rgba(230,235,242,.3) calc(var(--ov) * .3),rgba(234,238,243,.7) calc(var(--ov) * .6),rgba(238,241,245,.92) calc(var(--ov) * .82),#f2f3f5 var(--ov))}
+.intro-panel::before{height:calc(var(--ov) + 1rem);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 50%,#000 70%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 50%,#000 70%,transparent 100%)}
+@media (max-width:63.99rem){.intro-panel{margin-top:calc(-1 * var(--ov));padding-top:calc(var(--ov) + .5rem)}}
+/* v7: clean cut from the film to the page, no fade */
+.hero{--overlap:0;min-height:100svh}
+.hero-body{padding-bottom:4rem}
+.hero-shade{background:
+  linear-gradient(to bottom,rgba(5,8,12,.75) 0%,rgba(5,8,12,0) 22%),
+  linear-gradient(to right,rgba(6,10,16,.9) 0%,rgba(6,10,16,.7) 30%,rgba(6,10,16,.15) 58%,rgba(6,10,16,0) 100%),
+  linear-gradient(to top,rgba(5,8,12,.45) 0%,rgba(5,8,12,0) 22%)}
+.intro-panel,.intro-panel[class]{margin-top:0;padding-top:clamp(4rem,7vw,6rem);background:#f2f3f5}
+.intro-panel::before{display:none}
+@media (max-width:63.99rem){.intro-panel,.intro-panel[class]{margin-top:0;padding-top:4rem}}
+@media (max-width:40rem){.hero-shade{background:linear-gradient(to bottom,rgba(5,8,12,.6) 0%,rgba(5,8,12,.35) 45%,rgba(5,8,12,.7) 100%)}}

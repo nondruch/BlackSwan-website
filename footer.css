@@ -1,0 +1,74 @@
+/* Divisions: no fade into the footer, just a clean edge; heading block removed */
+.divx{background:linear-gradient(180deg,#f2f3f5 0,#f7f8fa 10rem,#ffffff 22rem,#ffffff 100%);padding-bottom:clamp(4.5rem,8vw,7rem)}
+@media (max-width:63.99rem){.divx{background:linear-gradient(180deg,#f2f3f5 0,#ffffff 12rem,#ffffff 100%)}}
+.divx-head{display:block}
+.divx-eyebrow{font-family:var(--font-sans);font-weight:400;font-size:1.125rem;line-height:1.5rem;color:var(--ink)}
+.divx-rail{margin-top:clamp(1.75rem,3vw,2.5rem)}
+
+/* ================= FOOTER (Point72 layout and type) ================= */
+.pf{--pf-bg:#18181a;--pf-ink:#f5f4ee;--pf-line:#505a6b;
+  background:var(--pf-bg);color:var(--pf-ink);border-top:1px solid var(--pf-line);
+  font-family:Aptos,"Aptos Display","Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:18px;line-height:1.3;font-weight:400;
+  padding:80px 32px 32px;-webkit-font-smoothing:antialiased}
+.pf-container{max-width:1920px;margin:0 auto}
+.pf-upper{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:32px}
+.pf-brand{grid-column:span 4}
+.pf-menu{grid-column:span 8}
+
+.pf-logo{display:inline-flex;align-items:center;gap:14px;color:var(--pf-ink)}
+.pf-logo img{height:56px;width:auto}
+.pf-rule{width:1px;height:44px;background:rgba(245,244,238,.35)}
+.pf-word{display:inline-flex;flex-direction:column;align-items:flex-start}
+.pf-name{font-family:var(--font-display);font-weight:500;font-size:31px;line-height:.95;letter-spacing:.012em;color:var(--pf-ink);white-space:nowrap}
+.pf-tag{margin-top:8px;font-family:var(--font-sans);font-size:10.5px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:rgba(245,244,238,.78);white-space:nowrap}
+
+.pf-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:32px;row-gap:40px}
+.pf-title{display:block;font-size:16px;line-height:1.1;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pf-ink)}
+.pf-sub{margin-top:16px}
+.pf-sub li + li{margin-top:12px}
+.pf-link{font-size:18px;line-height:1.3;color:var(--pf-ink);transition:color .15s ease}
+@media (hover:hover){.pf-link:hover{color:#ffffff;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}}
+.pf-link:focus-visible,.pf-ulink:focus-visible,.pf-social a:focus-visible,.pf-logo:focus-visible{outline:1px solid var(--pf-ink);outline-offset:3px}
+
+.pf-utility{margin-top:64px;border-top:1px solid var(--pf-ink);padding-top:33px;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.pf-legal{display:flex;flex-wrap:wrap;align-items:center;row-gap:13px;font-size:16px;line-height:1.3}
+.pf-legal li{display:inline-flex;align-items:center}
+.pf-legal li + li::before{content:"|";margin:0 12px}
+.pf-ulink{color:var(--pf-ink)}
+@media (hover:hover){.pf-ulink:hover{text-decoration:underline;text-underline-offset:3px}}
+.pf-social{display:flex;align-items:center;gap:24px;flex:none}
+.pf-social a{display:inline-flex;color:var(--pf-ink);transition:opacity .15s ease}
+.pf-social svg{width:20px;height:20px}
+@media (hover:hover){.pf-social a:hover{opacity:.7}}
+
+@media (max-width:63.99rem){
+  .pf-brand,.pf-menu{grid-column:1 / -1}
+  .pf-menu{margin-top:48px}
+}
+@media (max-width:47.99rem){
+  .pf{padding:56px 20px 28px}
+  .pf-cols{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px}
+  .pf-utility{flex-direction:column;align-items:flex-start}
+}
+
+/* halftone bell under the logo (as Point72's footer pattern): sits on the bottom rule, hidden on smaller screens */
+.pf-brand{display:flex;flex-direction:column;justify-content:space-between;gap:24px}
+.pf-graphic{display:block;width:100%;max-width:440px;height:auto;margin-bottom:-64px;color:var(--pf-ink);opacity:.5}
+@media (max-width:1024px){.pf-graphic{display:none}}
+
+/* --- performance & spacing --- */
+.why{padding-bottom:2rem}
+.divx{padding-top:1.25rem}
+@media (max-width:63.99rem){.divx{padding-top:1rem}}
+.intro-panel::before{display:none}          /* no live blur over the moving film: same fade, far cheaper */
+.nav-bar,.nav-bar[data-scrolled=true]{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.dp{contain:layout paint;transition:flex-grow .6s cubic-bezier(.2,.8,.2,1),border-color .3s ease}
+.dp.is-open{box-shadow:0 24px 48px -32px rgba(13,31,56,.28)}
+.hero-media{contain:strict}
+.hero-grain{display:none}
+/* performance: lighter glass, fewer re-blurs over the moving film */
+.nav-bar,.nav-bar[data-scrolled=true]{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.mega{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.intro-panel::before{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.pf{content-visibility:auto;contain-intrinsic-size:auto 640px}
+.tq-track.is-off{animation-play-state:paused}

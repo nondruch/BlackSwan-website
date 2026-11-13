@@ -1,0 +1,45 @@
+/* ================= APPLY PAGE ================= */
+.ap{--ink:#0d1f38;--copy:#3a4a60;--muted:#6b7a8f;--edge:#d6dde6;--accent:#2f6aa8;background:#fff;color:var(--copy)}
+.ap-hero{background:#f4f6f9;border-bottom:1px solid var(--edge);padding-block:1.75rem clamp(2.75rem,5vw,3.75rem)}
+.ap-hero .tm-crumbs,.ap-hero .tm-crumbs a{color:var(--muted)}
+.ap-hero .tm-crumbs [aria-current]{color:var(--ink)}
+.ap-h1{margin-top:clamp(1.75rem,4vw,2.75rem);font-family:var(--font-display);font-weight:500;font-size:clamp(2.5rem,2rem + 2vw,3.75rem);line-height:1.02;letter-spacing:-.012em;color:var(--ink)}
+.ap-lead{margin-top:.9rem;max-width:36rem;font-size:clamp(1.0625rem,1rem + .2vw,1.1875rem);line-height:1.6;color:var(--copy)}
+
+.ap-body{padding-block:clamp(3rem,5vw,4rem) clamp(4.5rem,8vw,6.5rem)}
+.ap-closed{display:flex;justify-content:space-between;align-items:center;gap:1.25rem 2rem;flex-wrap:wrap;padding:clamp(2.25rem,4.2vw,3.25rem) clamp(1.75rem,4vw,3.5rem);background:#0d1f38;color:#fff}
+.ap-closed h2{font-family:var(--font-display);font-weight:500;font-size:clamp(2rem,1.6rem + 1.2vw,2.75rem);line-height:1.1}
+.ap-closed p{margin-top:.55rem;font-size:1.0625rem;color:rgba(255,255,255,.75)}
+.ap-cbtn{display:inline-flex;align-items:center;padding:1rem 1.9rem;background:#fff;color:#0d1f38;font-size:.9375rem;border:1px solid #fff;transition:background-color .2s ease,color .2s ease}
+@media (hover:hover){.ap-cbtn:hover{background:transparent;color:#fff}}
+.ap-cbtn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+.ap-row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:1.5rem clamp(2rem,5vw,4.5rem);align-items:start;margin-top:clamp(4rem,7vw,5.5rem);padding-top:clamp(2.25rem,4vw,3rem);border-top:1px solid var(--edge)}
+.ap-rh{position:relative}
+.ap-rh::before{content:"";position:absolute;left:0;top:calc(-1 * clamp(2.25rem,4vw,3rem) - 1px);width:3rem;height:2px;background:var(--ink)}
+.ap-rh h2{font-family:var(--font-display);font-weight:500;font-size:clamp(1.875rem,1.5rem + 1.1vw,2.5rem);line-height:1.1;color:var(--ink);text-wrap:balance}
+.ap-intro{font-size:clamp(1.125rem,1.05rem + .3vw,1.3125rem);line-height:1.6;color:var(--ink);max-width:40rem}
+.ap-nums{margin-top:clamp(2.25rem,4vw,3rem);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--edge)}
+.ap-num{padding:1.75rem clamp(1.25rem,3vw,2.25rem) .25rem 0}
+.ap-num + .ap-num{padding-left:clamp(1.25rem,3vw,2.25rem);border-left:1px solid var(--edge)}
+.ap-big{display:block;font-family:var(--font-display);font-weight:400;font-size:clamp(3.25rem,2.5rem + 2.4vw,4.5rem);line-height:1;color:var(--ink);font-variant-numeric:lining-nums}
+.ap-num h3{margin-top:.9rem;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.ap-num p{margin-top:.6rem;font-size:.9688rem;line-height:1.65;color:var(--copy);max-width:24rem}
+
+.ap-faq{border-top:1px solid var(--edge)}
+.ap-row .ap-faq{border-top:0;margin-top:-1.15rem}
+.ap-q{border-bottom:1px solid var(--edge)}
+.ap-q:last-child{border-bottom:0}
+.ap-q summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.15rem 0;cursor:pointer;font-size:1.0625rem;font-weight:500;line-height:1.4;color:var(--ink)}
+.ap-q summary::-webkit-details-marker{display:none}
+.ap-q summary .plus{color:var(--accent)}
+.ap-q[open] summary .plus::after{transform:translateX(-.5px) scaleY(0)}
+.ap-q summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ap-q p{padding:0 2rem 1.25rem 0;max-width:46rem;font-size:1rem;line-height:1.65;color:var(--copy)}
+.ap-contact{margin-top:1.25rem;font-size:.9375rem;line-height:1.6;color:var(--muted)}
+.ap-contact a{color:var(--ink);border-bottom:1px solid rgba(47,106,168,.45)}
+@media (hover:hover){.ap-contact a:hover{color:var(--accent)}}
+
+@media (max-width:63.99rem){.ap-row{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:40rem){.ap-closed{flex-direction:column;align-items:flex-start}.ap-nums{grid-template-columns:minmax(0,1fr)}.ap-num + .ap-num{padding-left:0;border-left:0;border-top:1px solid var(--edge);margin-top:1.5rem}.ap-num{padding-right:0}}
+.ap-rule{font-family:var(--font-display);font-weight:500;font-size:clamp(1.875rem,1.5rem + 1.1vw,2.5rem);line-height:1.1;color:var(--ink);padding-bottom:.9rem;border-bottom:1px solid var(--edge)}

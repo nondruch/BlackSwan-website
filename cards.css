@@ -1,0 +1,15 @@
+/* ================= WHY JOIN: three cards (Point72-style) ================= */
+/* Tighter gap under "Who we are"; the divider now sits just below it */
+.intro-panel{padding-bottom:4rem}
+@media (max-width:63.99rem){.intro-panel{padding-bottom:3rem}}
+
+.why{--ink:#0d1f38;--eyebrow:#2f5e94;--card:#f8f9fb;--edge:#d2d8e1;background:#f2f3f5;padding-bottom:clamp(4.5rem,8vw,7rem)}
+.why-inner{max-width:96rem}
+.why-grid{border-top:1px solid #c4cbd5;padding-top:clamp(2.5rem,4vw,3.5rem);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2rem}
+.why-card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--edge);padding:clamp(1.75rem,2.6vw,2.5rem) clamp(1.5rem,2.3vw,2.25rem) clamp(1.75rem,2.6vw,2.5rem)}
+.why-eyebrow{font-family:var(--font-sans);font-size:.875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--eyebrow);line-height:1.1}
+.why-h{margin-top:.85rem;font-family:var(--font-display);font-weight:500;font-size:clamp(2rem,1.2rem + 1.6vw,3rem);line-height:1;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
+.why-p{margin-top:auto;padding-top:2rem;font-family:var(--font-sans);font-size:clamp(1rem,.9rem + .3vw,1.125rem);line-height:1.45;color:#28364a}
+@media (max-width:63.99rem){.why-grid{grid-template-columns:minmax(0,1fr);gap:1.25rem}.why-p{padding-top:1.25rem}}
+/* keep the small header text legible when the glass sits over light sections */
+.brand-sub,.login{color:#c6d3e3}
